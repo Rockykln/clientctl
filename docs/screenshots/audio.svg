@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Mockup of the audio dropdown — example data only. -->
+
+  <defs>
+    <radialGradient id="bg" cx="80%" cy="0%" r="100%">
+      <stop offset="0%" stop-color="#16161c"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="720" height="540" fill="url(#bg)"/>
+
+  <!-- Header (matches overview.svg / passkeys.svg / lock.svg style):
+       brand mark + name, slightly dimmed since the dropdown is the focus. -->
+  <g transform="translate(20,18)" opacity="0.55">
+    <g transform="translate(0,2)" fill="none" stroke="#5a8dee" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 11 L7 16 L11 21"/>
+      <path d="M21 11 L25 16 L21 21"/>
+      <path d="M18 9 L14 23"/>
+    </g>
+    <text x="36" y="22" font-size="18" font-weight="600" fill="#8a8a96" letter-spacing="0.5">clientctl</text>
+  </g>
+  <!-- Volume button (shows the dropdown is anchored to it) -->
+  <g transform="translate(656,18)">
+    <rect width="40" height="40" rx="13" fill="#25252e" stroke="#5a8dee" stroke-width="1.5"/>
+    <g transform="translate(9,9)" fill="#f0f0f5">
+      <path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12zm-2-7v2.07A6 6 0 0118 12a6 6 0 01-4 5.66v2.07A8 8 0 0014 5z"/>
+    </g>
+  </g>
+
+  <!-- Dropdown (anchored top-right, like the real UI) -->
+  <g transform="translate(360,72)">
+    <rect width="340" height="380" rx="16" fill="#1a1a20" stroke="#34343f"/>
+
+    <!-- Master volume row -->
+    <g transform="translate(10,12)">
+      <rect width="320" height="46" rx="12" fill="#25252e"/>
+      <!-- Icon vertically centred: row=46, icon ~20.4 (scale 0.85),
+           top = (46-20.4)/2 ≈ 13. -->
+      <g transform="translate(8,13) scale(0.85)" fill="#f0f0f5"><path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12zm-2-7v2.07A6 6 0 0118 12a6 6 0 01-4 5.66v2.07A8 8 0 0014 5z"/></g>
+      <!-- Slider track ends 12px before the percentage label so the thumb
+           at 100% (radius 13) has clear space against the text. -->
+      <rect x="46" y="20" width="208" height="8" rx="4" fill="#3a3a45"/>
+      <rect x="46" y="20" width="151" height="8" rx="4" fill="#5a8dee"/>
+      <!-- thumb -->
+      <circle cx="197" cy="24" r="13" fill="#f0f0f5" stroke="#5a8dee" stroke-width="2"/>
+      <text x="290" y="29" font-size="12" fill="#8a8a96" text-anchor="end">73%</text>
+    </g>
+
+    <!-- Per-app streams divider -->
+    <line x1="14" y1="68" x2="326" y2="68" stroke="#34343f" stroke-width="1"/>
+
+    <!-- Stream rows: row=38 tall, icon ~18.7 (scale 0.78), top = (38-18.7)/2 ≈ 10.
+         All track right edges land at x=250 so the 100% thumb (cx=250, r=9 →
+         right edge 259) clears the right-anchored percentage label (~265-290). -->
+
+    <!-- Stream 1 -->
+    <g transform="translate(10,80)">
+      <rect width="320" height="38" rx="10" fill="#25252e"/>
+      <g transform="translate(6,10) scale(0.78)" fill="#f0f0f5"><path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12z"/></g>
+      <text x="40" y="24" font-size="11" fill="#8a8a96">Music</text>
+      <rect x="92" y="16" width="158" height="6" rx="3" fill="#3a3a45"/>
+      <rect x="92" y="16" width="120" height="6" rx="3" fill="#5a8dee"/>
+      <circle cx="212" cy="19" r="9" fill="#f0f0f5" stroke="#5a8dee" stroke-width="2"/>
+      <text x="290" y="22" font-size="11" fill="#8a8a96" text-anchor="end">76%</text>
+    </g>
+
+    <!-- Stream 2 (muted) -->
+    <g transform="translate(10,128)">
+      <rect width="320" height="38" rx="10" fill="#25252e"/>
+      <g transform="translate(6,10) scale(0.78)" fill="#ee5a5a"><path d="M16.5 12A4.5 4.5 0 0014 7.97v2.21l2.45 2.45a4.4 4.4 0 00.05-.63zM19 12a7 7 0 01-.83 3.31l1.51 1.51A8.95 8.95 0 0021 12c0-4.28-2.99-7.86-7-8.77v2.06A7 7 0 0119 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></g>
+      <text x="40" y="24" font-size="11" fill="#8a8a96">Browser</text>
+      <rect x="92" y="16" width="158" height="6" rx="3" fill="#3a3a45" opacity="0.5"/>
+      <rect x="92" y="16" width="66"  height="6" rx="3" fill="#5a8dee" opacity="0.5"/>
+      <circle cx="158" cy="19" r="9" fill="#f0f0f5" stroke="#5a8dee" stroke-width="2" opacity="0.5"/>
+      <text x="290" y="22" font-size="11" fill="#8a8a96" text-anchor="end">42%</text>
+    </g>
+
+    <!-- Stream 3 — at 100% the thumb sits exactly at the track end, so
+         the track is shorter (track end x=250) and the label at x=290
+         right-anchored gets clear space. -->
+    <g transform="translate(10,176)">
+      <rect width="320" height="38" rx="10" fill="#25252e"/>
+      <g transform="translate(6,10) scale(0.78)" fill="#f0f0f5"><path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12z"/></g>
+      <text x="40" y="24" font-size="11" fill="#8a8a96">Notifications</text>
+      <rect x="120" y="16" width="130" height="6" rx="3" fill="#3a3a45"/>
+      <rect x="120" y="16" width="130" height="6" rx="3" fill="#5a8dee"/>
+      <circle cx="250" cy="19" r="9" fill="#f0f0f5" stroke="#5a8dee" stroke-width="2"/>
+      <text x="290" y="22" font-size="11" fill="#8a8a96" text-anchor="end">100%</text>
+    </g>
+
+    <!-- Empty hint -->
+    <text x="170" y="246" font-size="11" fill="#8a8a96" text-anchor="middle" opacity="0.6">3 active streams</text>
+  </g>
+
+  <text x="710" y="528" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.0</text>
+</svg>

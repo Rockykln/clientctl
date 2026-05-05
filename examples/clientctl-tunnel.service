@@ -1,0 +1,32 @@
+# clientctl Cloudflare tunnel — optional companion to clientctl.service.
+#
+# Install:
+#   cp examples/clientctl-tunnel.service ~/.config/systemd/user/
+#   # Edit: replace <PATH-TO-CLIENTCTL> with your absolute clone path.
+#   # Make sure cloudflared.yml is filled in (tunnel ID + credentials).
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now clientctl-tunnel.service
+#
+# View logs:
+#   journalctl --user -u clientctl-tunnel.service -f
+#
+# This unit ties its lifecycle to clientctl.service via Requires=, so
+# stopping clientctl also stops the tunnel.
+
+[Unit]
+Description=clientctl Cloudflare tunnel
+After=clientctl.service
+Requires=clientctl.service
+
+[Service]
+Type=simple
+WorkingDirectory=<PATH-TO-CLIENTCTL>
+ExecStart=cloudflared tunnel --config <PATH-TO-CLIENTCTL>/cloudflared.yml run
+Restart=on-failure
+RestartSec=10
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

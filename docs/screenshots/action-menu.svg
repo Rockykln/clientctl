@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Mockup of the long-press action menu (illustrative — not a real screenshot).
+       Mirrors style.css palette and layout. -->
+
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="0%" r="120%">
+      <stop offset="0%"  stop-color="#16161c"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </radialGradient>
+    <filter id="dim">
+      <feColorMatrix type="matrix" values="0.4 0 0 0 0  0 0.4 0 0 0  0 0 0.4 0 0  0 0 0 0.55 0"/>
+    </filter>
+  </defs>
+
+  <rect width="720" height="540" fill="url(#bg)"/>
+
+  <!-- Dimmed background grid (cells visible behind backdrop) -->
+  <g opacity="0.35" filter="url(#dim)">
+    <g transform="translate(60,80)">
+      <rect width="120" height="120" rx="18" fill="#1a1a20" stroke="#34343f"/>
+      <text x="60" y="110" font-size="11" fill="#8a8a96" text-anchor="middle">Files</text>
+    </g>
+    <g transform="translate(200,80)">
+      <rect width="120" height="120" rx="18" fill="#1a1a20" stroke="#5a8dee" stroke-width="2"/>
+      <text x="60" y="110" font-size="11" fill="#8a8a96" text-anchor="middle">Firefox</text>
+    </g>
+    <g transform="translate(340,80)">
+      <rect width="120" height="120" rx="18" fill="#1a1a20" stroke="#34343f"/>
+      <text x="60" y="110" font-size="11" fill="#8a8a96" text-anchor="middle">Terminal</text>
+    </g>
+    <g transform="translate(480,80)">
+      <rect width="120" height="120" rx="18" fill="#1a1a20" stroke="#34343f"/>
+      <text x="60" y="110" font-size="11" fill="#8a8a96" text-anchor="middle">Editor</text>
+    </g>
+  </g>
+
+  <!-- Backdrop -->
+  <rect width="720" height="540" fill="rgba(0,0,0,0.55)"/>
+
+  <!-- Action menu card -->
+  <g transform="translate(220,135)">
+    <rect width="280" height="270" rx="18" fill="#1a1a20" stroke="#34343f"/>
+
+    <!-- Header -->
+    <text x="140" y="34" font-size="13" font-weight="600" fill="#8a8a96" text-anchor="middle" letter-spacing="0.6">FIREFOX</text>
+    <line x1="20" y1="50" x2="260" y2="50" stroke="#34343f"/>
+
+    <!-- Close -->
+    <g transform="translate(20,62)">
+      <rect width="240" height="44" rx="12" fill="transparent"/>
+      <g transform="translate(14,10)" fill="#f0f0f5">
+        <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </g>
+      <text x="48" y="22" font-size="15" fill="#f0f0f5" dominant-baseline="central">Close</text>
+    </g>
+
+    <!-- Minimize (NEW) -->
+    <g transform="translate(20,110)">
+      <rect width="240" height="44" rx="12" fill="rgba(90,141,238,0.08)" stroke="#5a8dee" stroke-opacity="0.35"/>
+      <g transform="translate(14,10)" fill="#5a8dee">
+        <path d="M20 14H4v-2h16v2z"/>
+      </g>
+      <text x="48" y="22" font-size="15" fill="#f0f0f5" dominant-baseline="central">Minimize</text>
+      <text x="226" y="22" font-size="10" fill="#5a8dee" dominant-baseline="central" text-anchor="end">NEW</text>
+    </g>
+
+    <!-- Pause -->
+    <g transform="translate(20,158)">
+      <rect width="240" height="44" rx="12" fill="transparent"/>
+      <g transform="translate(14,10)" fill="#f0f0f5">
+        <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+      </g>
+      <text x="48" y="22" font-size="15" fill="#f0f0f5" dominant-baseline="central">Pause</text>
+    </g>
+
+    <!-- Kill (danger) -->
+    <g transform="translate(20,206)">
+      <rect width="240" height="44" rx="12" fill="transparent"/>
+      <g transform="translate(14,10)" fill="#e85a5a">
+        <path d="M13 3h-2v10h2zm4.83 2.17-1.42 1.42A6.93 6.93 0 0 1 19 12a7 7 0 1 1-12-4.92L5.59 5.66A8.95 8.95 0 0 0 3 12a9 9 0 0 0 18 0c0-2.74-1.23-5.18-3.17-6.83z"/>
+      </g>
+      <text x="48" y="22" font-size="15" fill="#e85a5a" dominant-baseline="central">Kill</text>
+    </g>
+  </g>
+
+  <text x="710" y="528" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.0</text>
+</svg>

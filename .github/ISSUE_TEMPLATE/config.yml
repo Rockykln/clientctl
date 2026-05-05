@@ -1,0 +1,2 @@
+# Force users into the templates — no blank "issue" without a category.
+blank_issues_enabled: false

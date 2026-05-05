@@ -1,0 +1,64 @@
+version: 2
+
+updates:
+  # Python dependencies (pip — reads requirements*.txt + pyproject.toml)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    # Higher cap because the very first Dependabot run on a fresh repo
+    # tends to surface a lot. After the initial flush it stays around 1-3.
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "deps"
+    # Aggressive grouping — every transitive dep should land in one of
+    # these so we get ~3 PRs per week max instead of one per package.
+    groups:
+      flask-stack:
+        patterns:
+          - "flask"
+          - "werkzeug"
+          - "jinja2"
+          - "click"
+          - "itsdangerous"
+          - "markupsafe"
+          - "blinker"
+      webauthn-stack:
+        patterns:
+          - "webauthn"
+          - "cryptography"
+          - "cbor2"
+          - "asn1crypto"
+          - "pycparser"
+          - "cffi"
+      runtime:
+        patterns:
+          - "psutil"
+          - "pyyaml"
+          - "python-dotenv"
+      dev-tools:
+        patterns:
+          - "pytest*"
+          - "coverage"
+          - "iniconfig"
+          - "pluggy"
+          - "pygments"
+          - "bandit"
+          - "pip-audit"
+
+  # GitHub Actions used in workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "ci"

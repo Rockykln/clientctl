@@ -1,0 +1,80 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. The more concrete you can
+        be, the faster we can fix it.
+
+  - type: input
+    id: version
+    attributes:
+      label: clientctl version
+      description: Look at the bottom-right corner of the UI or run `python -c "import config; print(config.VERSION)"`.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: gpu
+    attributes:
+      label: GPU
+      options:
+        - amd
+        - intel
+        - nvidia
+        - none / unknown
+    validations:
+      required: false
+
+  - type: input
+    id: distro
+    attributes:
+      label: Distribution + desktop
+      placeholder: "Arch Linux + KDE Plasma 6.2 (Wayland)"
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.12.7"
+    validations:
+      required: true
+
+  - type: textarea
+    id: caps
+    attributes:
+      label: Output of `/api/capabilities`
+      description: Paste the JSON. This tells us which backends are detected.
+      render: json
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, what did you get instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Server log (state/logs/server.log)
+      description: Paste the relevant lines. Sensitive data (login codes, tokens) is automatically rotated, but check anyway.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      options:
+        - label: I searched existing issues before opening this one.
+          required: true

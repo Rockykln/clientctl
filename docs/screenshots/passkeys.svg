@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Mockup of the settings dropdown showing the passkey list with
+       production-safe device identification (illustrative). -->
+
+  <defs>
+    <radialGradient id="bg" cx="80%" cy="0%" r="100%">
+      <stop offset="0%"  stop-color="#16161c"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="720" height="720" fill="url(#bg)"/>
+
+  <!-- Header (matches overview.svg style — no filled strip, just brand
+       mark + name on the page background, plus the settings cog at the
+       far right since the dropdown drops out from there). -->
+  <g transform="translate(28,28)">
+    <g transform="translate(0,12)" fill="none" stroke="#5a8dee" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 11 L7 16 L11 21"/>
+      <path d="M21 11 L25 16 L21 21"/>
+      <path d="M18 9 L14 23"/>
+    </g>
+    <text x="36" y="34" font-size="20" font-weight="600" fill="#8a8a96" letter-spacing="0.5">clientctl</text>
+  </g>
+  <!-- Settings button (cog) — anchored top-right, opens the dropdown below -->
+  <g transform="translate(648,30)">
+    <rect width="46" height="46" rx="14" fill="#1a1a20" stroke="#5a8dee"/>
+    <g transform="translate(11,11)" fill="#5a8dee">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.62-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </g>
+  </g>
+
+  <!-- Settings dropdown — drops out of the cog above, right-aligned -->
+  <g transform="translate(324,90)">
+    <rect width="370" height="546" rx="14" fill="#1a1a20" stroke="#34343f"/>
+
+    <!-- Title row -->
+    <g transform="translate(20,16)">
+      <text x="0"   y="14" font-size="12" font-weight="600" fill="#8a8a96" letter-spacing="0.6">PASSKEYS</text>
+      <text x="330" y="14" font-size="12" font-weight="500" fill="#f0f0f5" text-anchor="end">2/2</text>
+    </g>
+
+    <!-- Passkey 1 (LAN registered — has MAC) -->
+    <g transform="translate(20,46)">
+      <rect width="330" height="64" rx="12" fill="#252530"/>
+      <text x="14" y="22" font-size="14" font-weight="500" fill="#f0f0f5">Living-Room iPad</text>
+      <text x="14" y="40" font-size="11" fill="#8a8a96">04.05.2026, 18:17 · aa:bb:cc:dd:ee:ff</text>
+      <text x="14" y="56" font-size="11" fill="#8a8a96" opacity="0.75">12× · last 05.05.2026, 08:23</text>
+      <g transform="translate(296,18)">
+        <rect width="28" height="28" rx="8" fill="transparent"/>
+        <g transform="translate(6,6)" fill="#e85a5a">
+          <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Passkey 2 (tunnel registered — UA fallback) -->
+    <g transform="translate(20,118)">
+      <rect width="330" height="64" rx="12" fill="#252530"/>
+      <text x="14" y="22" font-size="14" font-weight="500" fill="#f0f0f5">Phone</text>
+      <text x="14" y="40" font-size="11" fill="#8a8a96">04.05.2026, 22:08 · iPhone · Safari</text>
+      <text x="14" y="56" font-size="11" fill="#8a8a96" opacity="0.75">3× · last 05.05.2026, 06:41</text>
+      <g transform="translate(296,18)">
+        <rect width="28" height="28" rx="8" fill="transparent"/>
+        <g transform="translate(6,6)" fill="#e85a5a">
+          <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Add button (disabled — quota reached) -->
+    <g transform="translate(20,196)">
+      <rect width="330" height="40" rx="12" fill="#5a8dee" opacity="0.4"/>
+      <text x="165" y="20" font-size="14" font-weight="500" fill="#fff" text-anchor="middle" dominant-baseline="central">Add passkey</text>
+    </g>
+    <text x="185" y="252" font-size="11" fill="#8a8a96" text-anchor="middle">Quota reached — delete one to register a new device</text>
+
+    <!-- Theme picker section -->
+    <line x1="20" y1="276" x2="350" y2="276" stroke="#34343f"/>
+    <text x="20" y="298" font-size="12" font-weight="600" fill="#8a8a96" letter-spacing="0.6">THEME</text>
+
+    <!-- 3×3 grid of cards: each is its own swatch + label, mirroring the
+         live theme-picker (.theme-btn renders both .theme-swatch and
+         .theme-name). 100px wide × 70px tall per card, 8px gap. -->
+    <g transform="translate(20,308)">
+      <!-- Row 1 -->
+      <g>
+        <rect width="100" height="70" rx="12" fill="#0d0d10" stroke="#5a8dee" stroke-width="2"/>
+        <circle cx="50" cy="26" r="9" fill="#5a8dee"/>
+        <text x="50" y="56" font-size="10" font-weight="600" fill="#f0f0f5" text-anchor="middle">Dark</text>
+      </g>
+      <g transform="translate(108,0)">
+        <rect width="100" height="70" rx="12" fill="#f5f5f7" stroke="#d1d1d6" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#007aff"/>
+        <text x="50" y="56" font-size="10" fill="#1c1c1e" text-anchor="middle">Light</text>
+      </g>
+      <g transform="translate(216,0)">
+        <rect width="100" height="70" rx="12" fill="#07070d" stroke="#2a2740" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#7e57ff"/>
+        <text x="50" y="56" font-size="10" fill="#ece8ff" text-anchor="middle">Midnight</text>
+      </g>
+
+      <!-- Row 2 -->
+      <g transform="translate(0,78)">
+        <rect width="100" height="70" rx="12" fill="#1c1c1f" stroke="#4a4a50" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#4dc4d4"/>
+        <text x="50" y="56" font-size="10" fill="#e1e1e6" text-anchor="middle">Dim</text>
+      </g>
+      <g transform="translate(108,78)">
+        <rect width="100" height="70" rx="12" fill="#2e3440" stroke="#4c566a" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#88c0d0"/>
+        <text x="50" y="56" font-size="10" fill="#eceff4" text-anchor="middle">Nord</text>
+      </g>
+      <g transform="translate(216,78)">
+        <rect width="100" height="70" rx="12" fill="#1e1e2e" stroke="#585b70" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#cba6f7"/>
+        <text x="50" y="56" font-size="10" fill="#cdd6f4" text-anchor="middle">Catppuccin</text>
+      </g>
+
+      <!-- Row 3 -->
+      <g transform="translate(0,156)">
+        <rect width="100" height="70" rx="12" fill="#1a1b26" stroke="#3b4261" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#7aa2f7"/>
+        <text x="50" y="56" font-size="10" fill="#c0caf5" text-anchor="middle">Tokyo Night</text>
+      </g>
+      <g transform="translate(108,156)">
+        <rect width="100" height="70" rx="12" fill="#282828" stroke="#665c54" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#fabd2f"/>
+        <text x="50" y="56" font-size="10" fill="#ebdbb2" text-anchor="middle">Gruvbox</text>
+      </g>
+      <!-- Auto — synthesized in app.js, follows prefers-color-scheme.
+           Diagonal split shows the dual nature without picking a side. -->
+      <g transform="translate(216,156)">
+        <defs>
+          <linearGradient id="autoBg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"  stop-color="#0d0d10"/>
+            <stop offset="50%" stop-color="#0d0d10"/>
+            <stop offset="50%" stop-color="#f5f5f7"/>
+            <stop offset="100%" stop-color="#f5f5f7"/>
+          </linearGradient>
+        </defs>
+        <rect width="100" height="70" rx="12" fill="url(#autoBg)" stroke="#5a8dee" stroke-width="1.5"/>
+        <circle cx="50" cy="26" r="9" fill="#5a8dee"/>
+        <text x="50" y="56" font-size="10" fill="#8a8a96" text-anchor="middle">Auto</text>
+      </g>
+    </g>
+  </g>
+
+  <text x="710" y="708" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.0</text>
+</svg>

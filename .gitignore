@@ -1,0 +1,49 @@
+# ── Runtime + secrets (keep these out of public history at all costs) ──
+state/
+.env
+
+# Private user config (the *.example.yml counterparts are public)
+apps.yml
+cloudflared.yml
+themes.yml
+
+# Personal scratch files — anything matching `*.local.<ext>` is yours
+# and never gets committed (notes, draft configs, local checklists, …).
+*.local.*
+
+# ── Python ─────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# ── Test + coverage artifacts ──────────────────────────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# ── Editor / IDE ───────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.code-workspace
+*.swp
+*.swo
+*~
+.\#*
+\#*\#
+
+# ── OS metadata ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── Misc ───────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.log

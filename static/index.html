@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="clientctl">
+  <meta name="theme-color" content="#0d0d10">
+  <meta name="format-detection" content="telephone=no">
+
+  <title>clientctl</title>
+
+  <!-- FOUC prevention: apply the saved theme before CSS loads, so the
+       page never flashes the default palette. External so the CSP can
+       forbid inline scripts. data-cfasync skips Cloudflare Rocket Loader. -->
+  <script src="/theme-bootstrap.js" data-cfasync="false"></script>
+
+  <link rel="icon"             type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon"  sizes="180x180"     href="/apple-touch-icon.png">
+  <link rel="mask-icon"        color="#0d0d10"      href="/favicon.svg">
+  <link rel="manifest"          href="/manifest.webmanifest">
+  <!-- themes.css is generated from themes.yml and must load BEFORE
+       style.css so theme variables are defined when the rules using
+       them get evaluated. -->
+  <link rel="stylesheet" href="/themes.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- ── Login ────────────────────────────────────────────── -->
+<section id="login" class="hidden">
+  <div class="card">
+    <svg class="card-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 11 L7 16 L11 21"/>
+        <path d="M21 11 L25 16 L21 21"/>
+        <path d="M18 9 L14 23"/>
+      </g>
+    </svg>
+    <h1>clientctl</h1>
+    <p class="muted">Enter the code shown in the terminal</p>
+    <input type="tel" inputmode="numeric" pattern="[0-9 ]*" maxlength="7"
+           placeholder="000 000" id="code-input" autocomplete="off">
+    <label class="remember-row">
+      <input type="checkbox" id="remember-input">
+      <span>Remember me on this device (14 days)</span>
+    </label>
+    <button id="login-btn">Unlock</button>
+    <button class="secondary" id="login-passkey-btn" hidden>Sign in with passkey</button>
+    <p class="insecure-hint" id="login-insecure-hint" hidden>
+      Passkeys require HTTPS. Open clientctl via your tunnel or
+      <code>localhost</code> to enable them.
+    </p>
+    <p class="error" id="login-error">&nbsp;</p>
+  </div>
+</section>
+
+<!-- ── Lock screen (PC is locked) ──────────────────────── -->
+<section id="screen-lock" class="hidden">
+  <div class="card">
+    <svg class="card-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 11 L7 16 L11 21"/>
+        <path d="M21 11 L25 16 L21 21"/>
+        <path d="M18 9 L14 23"/>
+      </g>
+    </svg>
+    <h1>Locked</h1>
+    <p class="muted" id="screen-lock-sub">PC is locked. Unlock with your passkey.</p>
+    <button id="unlock-passkey-btn">Unlock with passkey</button>
+    <button class="secondary" id="unlock-code-btn">Use code instead</button>
+    <p class="insecure-hint" id="unlock-insecure-hint" hidden>
+      Passkeys require HTTPS. Use the code button below or reopen via
+      your tunnel to enable passkey unlock.
+    </p>
+    <p class="error" id="unlock-error">&nbsp;</p>
+  </div>
+</section>
+
+<!-- ── App ──────────────────────────────────────────────── -->
+<section id="app" class="hidden">
+
+  <header>
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 11 L7 16 L11 21"/>
+          <path d="M21 11 L25 16 L21 21"/>
+          <path d="M18 9 L14 23"/>
+        </g>
+      </svg>
+      <h1>clientctl</h1>
+      <span class="ping" id="ping" data-state="idle">–</span>
+      <span class="battery" id="battery" hidden>
+        <svg class="battery-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 5h-1V3h-2v2h-2V3H9v2H8a1 1 0 00-1 1v14a1 1 0 001 1h8a1 1 0 001-1V6a1 1 0 00-1-1z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <rect class="battery-fill" x="9" y="18" width="6" height="2" rx="0.5"/>
+        </svg>
+        <span class="battery-text" id="battery-text">—</span>
+        <span class="battery-bolt">⚡</span>
+      </span>
+    </div>
+    <div class="header-controls">
+
+      <button class="ctrl-icon" data-cap="dbus_monitor" id="notif-btn" data-inhibited="false" aria-label="Notifications" aria-haspopup="true" aria-expanded="false">
+        <svg class="i-bell"      viewBox="0 0 24 24"><path d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 00-5-5.91V4a1 1 0 10-2 0v1.09A6 6 0 006 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        <svg class="i-bell-mute" viewBox="0 0 24 24"><path d="M20 18.69 7.84 6.14 5.27 3.49 4 4.76l2.8 2.8v.01c-.52.99-.8 2.16-.8 3.42v5l-2 2v1h13.73l2 2L21 19.72zM12 22c1.11 0 2-.89 2-2h-4a2 2 0 002 2zm6-7.32V11c0-3.08-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5S10.5 3.17 10.5 4v.68c-.15.03-.29.08-.42.12L18 12.68z"/></svg>
+      </button>
+
+      <button class="ctrl-icon" data-cap="power_profiles" id="power-btn" data-profile="balanced" aria-label="Cycle power profile">
+        <svg class="i-power-saver" viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/></svg>
+        <svg class="i-power-balanced" viewBox="0 0 24 24"><path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44zm-9.79 6.84a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"/></svg>
+        <svg class="i-power-performance" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H6.74a.5.5 0 01-.49-.59l1.95-9.91A1 1 0 019.18 3H14l-2 7h4.5a.5.5 0 01.4.8L11 21z"/></svg>
+      </button>
+
+      <button class="ctrl-icon ctrl-danger" id="shutdown-btn" aria-label="Shut down">
+        <svg viewBox="0 0 24 24"><path d="M13 3h-2v10h2zm4.83 2.17-1.42 1.42A6.93 6.93 0 0 1 19 12a7 7 0 1 1-12-4.92L5.59 5.66A8.95 8.95 0 0 0 3 12a9 9 0 0 0 18 0c0-2.74-1.23-5.18-3.17-6.83z"/></svg>
+      </button>
+
+      <button class="ctrl-icon ctrl-danger" id="server-kill-btn" aria-label="Stop clientctl server">
+        <svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg>
+      </button>
+
+      <button class="ctrl-icon" id="settings-btn" aria-label="Settings" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.62-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      </button>
+
+      <button class="ctrl-icon" id="logout-btn" aria-label="Sign out">
+        <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4a2 2 0 00-2 2v14a2 2 0 002 2h8v-2H4z"/></svg>
+      </button>
+
+      <span class="header-sep"></span>
+
+      <button class="ctrl-icon" data-cap="audio" id="volume-btn" data-muted="false" aria-label="Volume" aria-haspopup="true" aria-expanded="false">
+        <svg class="i-vol"  viewBox="0 0 24 24"><path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12zm-2-7v2.07A6 6 0 0118 12a6 6 0 01-4 5.66v2.07A8 8 0 0014 5z"/></svg>
+        <svg class="i-mute" viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0014 7.97v2.21l2.45 2.45a4.4 4.4 0 00.05-.63zM19 12a7 7 0 01-.83 3.31l1.51 1.51A8.95 8.95 0 0021 12c0-4.28-2.99-7.86-7-8.77v2.06A7 7 0 0119 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+      </button>
+
+      <button class="ctrl-icon" data-cap="brightness" id="brightness-btn" aria-label="Brightness" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm-1-13h2v3h-2V2zm0 17h2v3h-2v-3zM4.22 5.64l1.42-1.42 2.12 2.12-1.41 1.42-2.13-2.12zm12.02 12.02l1.41-1.42 2.13 2.12-1.42 1.42-2.12-2.12zM2 11h3v2H2v-2zm17 0h3v2h-3v-2zM4.22 18.36l2.12-2.12 1.42 1.41-2.13 2.13-1.41-1.42zm12.02-12.02l2.12-2.12 1.42 1.41-2.13 2.13-1.41-1.42z"/></svg>
+      </button>
+
+      <button class="ctrl-icon" data-cap="logind" id="lock-btn" aria-label="Lock screen">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z"/></svg>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ── Stats row (CPU/RAM/GPU/PROC/NET) ───────────────── -->
+  <div class="stats" id="stats" hidden>
+    <div class="stat" id="stat-cpu">
+      <span class="stat-label">CPU</span>
+      <span class="stat-value" id="stat-cpu-val">–</span>
+      <div class="stat-bar"><div class="stat-bar-fill" id="stat-cpu-bar" style="width:0%"></div></div>
+    </div>
+    <div class="stat" id="stat-mem">
+      <span class="stat-label">RAM</span>
+      <span class="stat-value" id="stat-mem-val">–</span>
+      <div class="stat-bar"><div class="stat-bar-fill" id="stat-mem-bar" style="width:0%"></div></div>
+    </div>
+    <div class="stat" id="stat-gpu" data-empty="true">
+      <span class="stat-label">GPU</span>
+      <span class="stat-value" id="stat-gpu-val">—</span>
+      <div class="stat-bar"><div class="stat-bar-fill" id="stat-gpu-bar" style="width:0%"></div></div>
+    </div>
+    <div class="stat stat-plain" id="stat-procs">
+      <span class="stat-label">PROC</span>
+      <span class="stat-value" id="stat-procs-val">–</span>
+    </div>
+    <div class="stat stat-wide" id="stat-net">
+      <span class="stat-label">NET</span>
+      <span class="stat-value" id="stat-net-val">↓ –   ↑ –</span>
+    </div>
+  </div>
+
+  <!-- ── Dropdowns ──────────────────────────────────────── -->
+
+  <div class="dropdown notif-dropdown" id="notif-dropdown" data-anchor="notif-btn" hidden>
+    <div class="notif-header">
+      <button class="notif-toggle" id="notif-toggle-btn" data-inhibited="false">
+        <span class="notif-toggle-label">Do not disturb</span>
+        <span class="notif-toggle-switch"><span class="notif-toggle-knob"></span></span>
+      </button>
+      <span class="notif-toggle-hint" id="notif-toggle-hint" hidden>active</span>
+    </div>
+    <div class="notif-list" id="notif-list">
+      <div class="notif-empty">No new notifications</div>
+    </div>
+    <button class="notif-clear" id="notif-clear-btn" hidden>Clear list</button>
+  </div>
+
+  <div class="dropdown" id="volume-dropdown" data-anchor="volume-btn" hidden>
+    <div class="ctrl-row" id="volume-row">
+      <button class="ctrl-icon ctrl-icon-inner" id="volume-mute" data-muted="false" aria-label="Toggle mute">
+        <svg class="i-vol"  viewBox="0 0 24 24"><path d="M3 10v4a1 1 0 001 1h3l4 4V5L7 9H4a1 1 0 00-1 1zm13 2a4 4 0 00-2-3.46v6.92A4 4 0 0016 12zm-2-7v2.07A6 6 0 0118 12a6 6 0 01-4 5.66v2.07A8 8 0 0014 5z"/></svg>
+        <svg class="i-mute" viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0014 7.97v2.21l2.45 2.45a4.4 4.4 0 00.05-.63zM19 12a7 7 0 01-.83 3.31l1.51 1.51A8.95 8.95 0 0021 12c0-4.28-2.99-7.86-7-8.77v2.06A7 7 0 0119 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+      </button>
+      <input type="range" class="slider" id="volume-slider" min="0" max="100" value="100">
+      <span class="ctrl-value" id="volume-value">100%</span>
+    </div>
+    <div class="audio-streams" id="audio-streams"></div>
+  </div>
+
+  <div class="dropdown" id="brightness-dropdown" data-anchor="brightness-btn" hidden>
+    <div id="brightness-bars"></div>
+  </div>
+
+  <div class="dropdown settings-dropdown" id="settings-dropdown" data-anchor="settings-btn" hidden>
+    <div class="settings-section">
+      <div class="settings-title">Passkeys <span class="settings-counter" id="passkey-count">—</span></div>
+      <div id="passkey-list" class="passkey-list"></div>
+      <button class="settings-add" id="passkey-add-btn">+ Add passkey</button>
+      <p class="settings-hint" id="passkey-disabled-hint" hidden>
+        Registration disabled. Set <code>PASSKEY_REGISTRATION_PASSWORD</code>
+        in <code>.env</code> and restart the server to enable.
+      </p>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">Theme</div>
+      <div class="theme-picker" id="theme-picker"></div>
+    </div>
+    <div class="settings-meta">
+      clientctl <span id="settings-version">v–</span>
+    </div>
+  </div>
+
+  <div class="modal" id="passkey-modal" hidden>
+    <div class="modal-card">
+      <h2>Add passkey</h2>
+      <p class="muted">Enter the setup password from your .env file.</p>
+      <input type="text" placeholder="Device name (e.g. Laptop)" id="passkey-name-input" maxlength="50">
+      <input type="password" placeholder="Setup password" id="passkey-pw-input" autocomplete="off">
+      <div class="modal-actions">
+        <button class="secondary" id="passkey-cancel-btn">Cancel</button>
+        <button id="passkey-confirm-btn">Create</button>
+      </div>
+      <p class="error" id="passkey-modal-error">&nbsp;</p>
+    </div>
+  </div>
+
+  <main>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <div class="app-footer" id="app-footer" hidden>
+    <a class="app-repo" id="app-repo" target="_blank" rel="noopener noreferrer"
+       aria-label="Open source repository" title="Open repository" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.547-1.385-1.336-1.755-1.336-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </svg>
+    </a>
+    <span class="app-version" id="app-version" title="clientctl version">v–</span>
+  </div>
+
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Action menu (long-press on app cell) -->
+<div id="action-menu" class="action-menu" hidden>
+  <div class="action-menu-header" id="action-menu-title">App</div>
+  <button class="action-menu-item" data-act="close">
+    <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+    </svg>
+    <span>Close</span>
+  </button>
+  <button class="action-menu-item" data-act="window">
+    <svg class="action-icon" id="action-window-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path id="action-window-path" d="M20 14H4v-2h16v2z"/>
+    </svg>
+    <span id="action-window-label">Minimize</span>
+  </button>
+  <button class="action-menu-item" data-act="pause">
+    <svg class="action-icon" id="action-pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path id="action-pause-path" d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+    </svg>
+    <span id="action-pause-label">Pause</span>
+  </button>
+  <button class="action-menu-item action-menu-danger" data-act="kill">
+    <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M13 3h-2v10h2zm4.83 2.17-1.42 1.42A6.93 6.93 0 0 1 19 12a7 7 0 1 1-12-4.92L5.59 5.66A8.95 8.95 0 0 0 3 12a9 9 0 0 0 18 0c0-2.74-1.23-5.18-3.17-6.83z"/>
+    </svg>
+    <span>Kill</span>
+  </button>
+</div>
+<div id="action-menu-backdrop" class="action-menu-backdrop" hidden></div>
+
+<!-- Brightness row template -->
+<template id="brightness-bar-tpl">
+  <div class="ctrl-row brightness-row">
+    <span class="ctrl-icon ctrl-icon-inner ctrl-icon-static" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm-1-13h2v3h-2V2zm0 17h2v3h-2v-3zM4.22 5.64l1.42-1.42 2.12 2.12-1.41 1.42-2.13-2.12zm12.02 12.02l1.41-1.42 2.13 2.12-1.42 1.42-2.12-2.12zM2 11h3v2H2v-2zm17 0h3v2h-3v-2zM4.22 18.36l2.12-2.12 1.42 1.41-2.13 2.13-1.41-1.42zm12.02-12.02l2.12-2.12 1.42 1.41-2.13 2.13-1.41-1.42z"/></svg>
+    </span>
+    <input type="range" class="slider" min="0" max="100" value="100">
+    <span class="display-name"></span>
+    <span class="ctrl-value">100%</span>
+  </div>
+</template>
+
+<!-- Cell templates (app + cachy) -->
+<template id="cell-app-tpl">
+  <button class="cell cell-app" data-action="app">
+    <img class="cell-icon" alt="" loading="eager">
+    <span class="cell-label"></span>
+  </button>
+</template>
+<template id="cell-cachy-tpl">
+  <button class="cell cell-cachy" data-action="cachy">
+    <img class="cell-icon" id="cachy-icon" alt="" loading="eager">
+    <span class="cell-label">Cachy Update</span>
+  </button>
+</template>
+
+<script src="/app.js" data-cfasync="false"></script>
+</body>
+</html>

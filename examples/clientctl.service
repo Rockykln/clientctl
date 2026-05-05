@@ -1,0 +1,41 @@
+# clientctl — systemd user service.
+#
+# Auto-starts the Flask server (without the Cloudflare tunnel — see the
+# companion `clientctl-tunnel.service` if you want the tunnel too).
+#
+# Install:
+#   mkdir -p ~/.config/systemd/user
+#   cp examples/clientctl.service ~/.config/systemd/user/
+#   # Edit the file: replace <PATH-TO-CLIENTCTL> with your absolute clone path.
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now clientctl.service
+#
+# View logs:
+#   journalctl --user -u clientctl.service -f
+#
+# Notes:
+#   - Runs as your user, not root. No privileges escalation.
+#   - `After=graphical-session.target` means it starts after Plasma is up,
+#     so DBus / KWin scripting work. On non-graphical setups remove that.
+#   - The login code is regenerated on every restart — find it via
+#     `journalctl --user -u clientctl -n 50`.
+
+[Unit]
+Description=clientctl — Linux client control panel
+After=network-online.target graphical-session.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=<PATH-TO-CLIENTCTL>
+ExecStart=<PATH-TO-CLIENTCTL>/.venv/bin/python -u <PATH-TO-CLIENTCTL>/server.py
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONDONTWRITEBYTECODE=1
+
+# Logs end up in journalctl --user
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

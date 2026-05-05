@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{{STATUS}} — clientctl</title>
+
+  <!-- Same FOUC + theme CSS pipeline as the main app, so the error page
+       inherits the user's chosen theme without any extra wiring. -->
+  <script src="/theme-bootstrap.js"></script>
+
+  <link rel="icon"             type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/themes.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="error-page">
+
+<main class="error-screen">
+  <div class="error-card">
+    <div class="error-status" aria-hidden="true">{{STATUS}}</div>
+    <h1 class="error-title">{{TITLE}}</h1>
+    <p class="error-message">{{MESSAGE}}</p>
+    <div class="error-actions">
+      <a class="error-btn" href="/">Back to clientctl</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

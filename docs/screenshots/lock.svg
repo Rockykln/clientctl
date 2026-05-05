@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" font-family="system-ui, -apple-system, sans-serif">
+  <!-- Mockup of the lock screen overlay (illustrative). -->
+
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#16161c"/>
+      <stop offset="100%" stop-color="#0d0d10"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="720" height="540" fill="url(#bg)"/>
+
+  <!-- Card -->
+  <g transform="translate(180,110)">
+    <rect width="360" height="320" rx="18" fill="#1a1a20" stroke="#34343f"/>
+
+    <!-- Brand mark — matches favicon + header logo -->
+    <g transform="translate(156,32) scale(1.5)" fill="none" stroke="#5a8dee" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 11 L7 16 L11 21"/>
+      <path d="M21 11 L25 16 L21 21"/>
+      <path d="M18 9 L14 23"/>
+    </g>
+
+    <text x="180" y="120" font-size="26" font-weight="600" fill="#f0f0f5" text-anchor="middle">Locked</text>
+
+    <text x="180" y="148" font-size="14" fill="#8a8a96" text-anchor="middle">PC is locked. Unlock with your passkey.</text>
+
+    <!-- Primary button -->
+    <g transform="translate(32,180)">
+      <rect width="296" height="50" rx="14" fill="#5a8dee"/>
+      <text x="148" y="25" font-size="16" font-weight="600" fill="#fff"
+            text-anchor="middle" dominant-baseline="central">Unlock with passkey</text>
+    </g>
+
+    <!-- Secondary button -->
+    <g transform="translate(32,242)">
+      <rect width="296" height="44" rx="14" fill="transparent" stroke="#34343f"/>
+      <text x="148" y="22" font-size="14" font-weight="500" fill="#8a8a96"
+            text-anchor="middle" dominant-baseline="central">Use code instead</text>
+    </g>
+  </g>
+
+  <text x="710" y="528" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.0</text>
+</svg>
