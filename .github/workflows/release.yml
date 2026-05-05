@@ -1,0 +1,66 @@
+name: release
+
+# Triggered when a semver tag is pushed: e.g. `git tag v0.2.0 && git push --tags`
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write   # required to create the release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history for changelog)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install + run tests (gate the release)
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pytest -q
+
+      - name: Verify tag matches config.VERSION
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          PY_VERSION=$(python -c "import config; print(config.VERSION)")
+          if [ "$TAG" != "$PY_VERSION" ]; then
+            echo "::error::Tag v$TAG does not match config.VERSION ($PY_VERSION)"
+            exit 1
+          fi
+          echo "Releasing v$TAG"
+
+      - name: Verify CHANGELOG has a matching entry for this tag
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          if ! grep -qE "^## \[${TAG}\]" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md is missing the '## [${TAG}]' section"
+            exit 1
+          fi
+
+      - name: Verify docs/releases/v<TAG>.md exists
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          if [ ! -f "docs/releases/v${TAG}.md" ]; then
+            echo "::error::docs/releases/v${TAG}.md is missing — run the maintainer's release-check tool before tagging"
+            exit 1
+          fi
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v3
+        with:
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, '-') }}   # e.g. v0.2.0-rc1
+          name: "clientctl ${{ github.ref_name }}"

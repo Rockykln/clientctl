@@ -1,0 +1,29 @@
+[Desktop Entry]
+# clientctl — KDE / freedesktop application launcher.
+#
+# Install:
+#   1. Copy this file into your Desktop folder. Use `xdg-user-dir DESKTOP`
+#      to resolve the localised path (~/Desktop, ~/Schreibtisch, …):
+#        cp clientctl.desktop "$(xdg-user-dir DESKTOP)/clientctl.desktop"
+#   2. Replace <PATH-TO-CLIENTCTL> below with your absolute clone path.
+#   3. Replace <PATH-TO-ICON> with your preferred icon (optional — drop the
+#      Icon= line entirely to use the default).
+#   4. Make it executable:
+#        chmod +x "$(xdg-user-dir DESKTOP)/clientctl.desktop"
+#   5. KDE asks for a one-time trust confirmation:
+#      right-click -> "Allow Executing as Program"
+#      (or run: gio set <file> metadata::trusted true).
+#
+# Double-click runs start.sh in a Konsole window so the login code is visible.
+
+Type=Application
+Version=1.0
+Name=clientctl
+GenericName=Linux Client Control Panel
+Comment=Web control panel for this machine
+Exec=bash -c "cd <PATH-TO-CLIENTCTL> && ./start.sh"
+Icon=<PATH-TO-ICON>
+Terminal=true
+Categories=Utility;System;Network;
+Keywords=control;panel;remote;ipad;
+StartupNotify=false

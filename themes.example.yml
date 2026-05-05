@@ -1,0 +1,200 @@
+# clientctl — theme palettes
+#
+# Copied to themes.yml on first launch (gitignored). Edit themes.yml to
+# add or tweak palettes; the example here stays untouched.
+#
+# Each theme defines the same set of colour variables — every key MUST
+# be present, otherwise the loader rejects the theme with a warning.
+#
+# After editing, restart the server (themes are loaded on startup) or
+# trigger a reload by hitting `/api/themes/reload` (auth required).
+
+themes:
+
+  dark:
+    label:    "Dark"
+    accent:   "#5a8dee"
+    palette:
+      bg:           "#0d0d10"
+      surface:      "#1a1a20"
+      surface-2:    "#25252e"
+      border:       "#34343f"
+      text:         "#f0f0f5"
+      muted:        "#8a8a96"
+      accent:       "#5a8dee"
+      error:        "#ee5a5a"
+      success:      "#5aee8d"
+      warn:         "#f0c43a"
+      thumb-track:  "#3a3a45"
+      thumb-bg:     "#f0f0f5"
+      inner-glow:   "rgba(255,255,255,0.06)"
+      shadow:       "rgba(0,0,0,0.55)"
+      toast-bg:     "rgba(28, 28, 34, 0.85)"
+      toast-border: "rgba(255,255,255,0.06)"
+    color-scheme: dark
+
+  light:
+    label:    "Light"
+    accent:   "#007aff"
+    palette:
+      bg:           "#f5f5f7"
+      surface:      "#ffffff"
+      surface-2:    "#ebebee"
+      border:       "#d1d1d6"
+      text:         "#1c1c1e"
+      muted:        "#6c6c70"
+      accent:       "#007aff"
+      error:        "#ff3b30"
+      success:      "#34c759"
+      warn:         "#ff9500"
+      thumb-track:  "#c7c7cc"
+      thumb-bg:     "#ffffff"
+      inner-glow:   "rgba(0,0,0,0.04)"
+      shadow:       "rgba(0,0,0,0.15)"
+      toast-bg:     "rgba(255,255,255,0.92)"
+      toast-border: "rgba(0,0,0,0.08)"
+    color-scheme: light
+
+  midnight:
+    label:    "Midnight"
+    accent:   "#7e57ff"
+    palette:
+      bg:           "#07070d"
+      surface:      "#110f1c"
+      surface-2:    "#1a172a"
+      border:       "#2a2740"
+      text:         "#ece8ff"
+      muted:        "#837e9a"
+      accent:       "#7e57ff"
+      error:        "#ff5c8a"
+      success:      "#5aeec0"
+      warn:         "#ffb74d"
+      thumb-track:  "#2a2740"
+      thumb-bg:     "#ece8ff"
+      inner-glow:   "rgba(126,87,255,0.10)"
+      shadow:       "rgba(0,0,0,0.65)"
+      toast-bg:     "rgba(15, 14, 28, 0.88)"
+      toast-border: "rgba(126,87,255,0.18)"
+    color-scheme: dark
+
+  # Dim — softer contrast for long-running sessions. Differentiated from
+  # Dark by a warm teal accent so the two are visually distinguishable.
+  dim:
+    label:    "Dim"
+    accent:   "#4dc4d4"
+    palette:
+      bg:           "#1c1c1f"
+      surface:      "#2a2a2e"
+      surface-2:    "#3a3a3f"
+      border:       "#4a4a50"
+      text:         "#e1e1e6"
+      muted:        "#92929c"
+      accent:       "#4dc4d4"
+      error:        "#e57373"
+      success:      "#81c784"
+      warn:         "#ffd54f"
+      thumb-track:  "#4a4a50"
+      thumb-bg:     "#e1e1e6"
+      inner-glow:   "rgba(255,255,255,0.04)"
+      shadow:       "rgba(0,0,0,0.40)"
+      toast-bg:     "rgba(40, 40, 44, 0.88)"
+      toast-border: "rgba(255,255,255,0.06)"
+    color-scheme: dark
+
+  nord:
+    label:    "Nord"
+    accent:   "#88c0d0"
+    palette:
+      bg:           "#2e3440"
+      surface:      "#3b4252"
+      surface-2:    "#434c5e"
+      border:       "#4c566a"
+      text:         "#eceff4"
+      muted:        "#81a1c1"
+      accent:       "#88c0d0"
+      error:        "#bf616a"
+      success:      "#a3be8c"
+      warn:         "#ebcb8b"
+      thumb-track:  "#4c566a"
+      thumb-bg:     "#eceff4"
+      inner-glow:   "rgba(255,255,255,0.05)"
+      shadow:       "rgba(0,0,0,0.35)"
+      toast-bg:     "rgba(46, 52, 64, 0.92)"
+      toast-border: "rgba(136,192,208,0.20)"
+    color-scheme: dark
+
+  # Catppuccin Mocha — modern pastel-rosy dark theme by the catppuccin
+  # community. Mauve accent is the signature flavor.
+  catppuccin:
+    label:    "Catppuccin"
+    accent:   "#cba6f7"
+    palette:
+      bg:           "#1e1e2e"
+      surface:      "#313244"
+      surface-2:    "#45475a"
+      border:       "#585b70"
+      text:         "#cdd6f4"
+      muted:        "#a6adc8"
+      accent:       "#cba6f7"
+      error:        "#f38ba8"
+      success:      "#a6e3a1"
+      warn:         "#f9e2af"
+      thumb-track:  "#585b70"
+      thumb-bg:     "#cdd6f4"
+      inner-glow:   "rgba(203,166,247,0.08)"
+      shadow:       "rgba(0,0,0,0.50)"
+      toast-bg:     "rgba(30, 30, 46, 0.92)"
+      toast-border: "rgba(203,166,247,0.18)"
+    color-scheme: dark
+
+  # Tokyo Night — popular dev theme. Deep navy base, periwinkle blue
+  # accent, soft pastel state colors.
+  tokyo-night:
+    label:    "Tokyo Night"
+    accent:   "#7aa2f7"
+    palette:
+      bg:           "#1a1b26"
+      surface:      "#24283b"
+      surface-2:    "#292e42"
+      border:       "#3b4261"
+      text:         "#c0caf5"
+      muted:        "#565f89"
+      accent:       "#7aa2f7"
+      error:        "#f7768e"
+      success:      "#9ece6a"
+      warn:         "#e0af68"
+      thumb-track:  "#3b4261"
+      thumb-bg:     "#c0caf5"
+      inner-glow:   "rgba(122,162,247,0.08)"
+      shadow:       "rgba(0,0,0,0.55)"
+      toast-bg:     "rgba(36, 40, 59, 0.92)"
+      toast-border: "rgba(122,162,247,0.20)"
+    color-scheme: dark
+
+  # Gruvbox — retro warm earth tones. Signature gruvbox-yellow accent,
+  # high contrast against the dark base.
+  gruvbox:
+    label:    "Gruvbox"
+    accent:   "#fabd2f"
+    palette:
+      bg:           "#282828"
+      surface:      "#3c3836"
+      surface-2:    "#504945"
+      border:       "#665c54"
+      text:         "#ebdbb2"
+      muted:        "#928374"
+      accent:       "#fabd2f"
+      error:        "#fb4934"
+      success:      "#b8bb26"
+      warn:         "#fe8019"
+      thumb-track:  "#665c54"
+      thumb-bg:     "#ebdbb2"
+      inner-glow:   "rgba(250,189,47,0.08)"
+      shadow:       "rgba(0,0,0,0.50)"
+      toast-bg:     "rgba(60, 56, 54, 0.92)"
+      toast-border: "rgba(250,189,47,0.20)"
+    color-scheme: dark
+
+
+# Default theme used when the browser has no saved choice
+default: dark

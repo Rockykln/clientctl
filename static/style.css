@@ -1,0 +1,1443 @@
+/* Theme palettes are defined in themes.yml and emitted as /themes.css —
+   loaded BEFORE this file in index.html. To add or edit a theme, edit
+   themes.yml and POST /api/themes/reload (or restart). The schema is
+   validated by core/themes.py.
+   ───────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Layout vars — these are NOT theme-dependent and stay here */
+  --header-h:  56px;
+  --stats-h:   44px;
+  --row-h:     46px;
+  --gap:       12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100dvh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+button { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+/* Keyboard-only focus ring — clean accent outline, never shown on mouse
+   click thanks to :focus-visible. Crucial for a11y / external keyboards. */
+button:focus { outline: none; }
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible,
+.theme-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+.hidden { display: none !important; }
+[hidden] { display: none !important; }
+
+/* ── Login ───────────────────────────────────────────── */
+
+#login {
+  position: fixed; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.card h1 { font-size: 26px; font-weight: 600; margin-bottom: 8px; }
+.card .muted { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+.card input {
+  width: 100%;
+  padding: 18px;
+  font-size: 28px;
+  text-align: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  letter-spacing: 6px;
+  margin-bottom: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.card input:focus { outline: none; border-color: var(--accent); }
+.card button {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  border-radius: 14px;
+  transition: transform 0.1s;
+}
+.card button:active { transform: scale(0.98); }
+
+.error { color: var(--error); font-size: 14px; margin-top: 16px; min-height: 20px; }
+
+/* Remember-me row on the login card.
+   The actual <input> is visually hidden — iOS Safari ignores width/height
+   on native checkboxes even with appearance:none. We render the visible
+   box as a ::before on the <span>, which Safari can't inflate. */
+.remember-row {
+  display: block;
+  padding: 8px 4px;
+  margin: -4px 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.remember-row input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.remember-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.3;
+}
+.remember-row span::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  background-color: var(--surface-2);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70%;
+  transition: background-color 0.12s, border-color 0.12s;
+}
+.remember-row input:checked + span::before {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12 L10 17 L19 7' stroke='white' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.remember-row input:focus-visible + span::before {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Inline hint shown on login/lock screens when WebAuthn isn't available
+   (i.e. the page was loaded over plain HTTP from a non-loopback host). */
+.insecure-hint {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(240,196,58,0.08);
+  border: 1px solid rgba(240,196,58,0.25);
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+  text-align: left;
+}
+.insecure-hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  background: var(--inner-glow);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+button.secondary {
+  background: transparent !important;
+  color: var(--muted) !important;
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+button.secondary:active { background: var(--surface-2) !important; }
+
+/* ── Lock screen overlay ─────────────────────────────── */
+
+#screen-lock {
+  position: fixed; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: env(safe-area-inset-top) 24px env(safe-area-inset-bottom);
+  background: var(--bg);
+  z-index: 150;
+}
+/* Brand mark above the login + lock cards — same shape as header
+   .brand-mark and the favicon, scaled up for the auth context. */
+.card-mark {
+  display: block;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  color: var(--accent);
+}
+
+/* ── Settings dropdown ───────────────────────────────── */
+
+.settings-dropdown { min-width: 320px; }
+.settings-section { padding: 4px; }
+.settings-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 4px 8px 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.settings-counter { color: var(--text); font-weight: 500; }
+
+.passkey-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.passkey-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-2);
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  gap: 8px;
+}
+.passkey-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.passkey-name { font-weight: 500; }
+.passkey-meta { font-size: 11px; color: var(--muted); line-height: 1.45; }
+.passkey-uses { opacity: 0.75; font-variant-numeric: tabular-nums; }
+.passkey-delete {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  color: var(--error);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.passkey-delete svg { width: 16px; height: 16px; fill: currentColor; }
+.passkey-delete:active { background: var(--error); color: white; }
+
+.passkey-empty {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 14px;
+  text-align: center;
+}
+
+.settings-add {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent);
+  color: white;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.settings-add:active { transform: scale(0.98); }
+.settings-add:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.settings-hint {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(240,196,58,0.08);
+  border: 1px solid rgba(240,196,58,0.25);
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.settings-hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  background: var(--inner-glow);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+/* ── Theme picker ─────────────────────────────────────────────────────
+   Each card is a live preview — it renders using the theme's actual
+   background, border, text and accent colors (set as inline custom
+   properties from JS). This is the same pattern VS Code / Notion use:
+   you see what you're getting before you click. */
+
+.theme-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+.theme-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 8px 12px;
+  background: var(--tb-bg);
+  border: 2px solid var(--tb-border);
+  color: var(--tb-text);
+  border-radius: 14px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.15s ease;
+}
+.theme-btn:active { transform: scale(0.97); }
+@media (hover: hover) {
+  .theme-btn:hover:not([aria-pressed="true"]) {
+    border-color: var(--tb-accent);
+  }
+}
+.theme-btn[aria-pressed="true"] {
+  border-color: var(--tb-accent);
+  box-shadow: 0 0 0 3px var(--tb-glow);
+}
+
+/* Solid accent dot — replaces the conic-gradient circle. Renders sharply
+   at every size on every browser, no anti-aliasing artifacts. */
+.theme-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--tb-accent);
+  border: 2px solid var(--tb-bg);
+  box-shadow: 0 0 0 1.5px var(--tb-border);
+  flex: 0 0 auto;
+}
+.theme-name {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  color: var(--tb-text);
+  opacity: 0.7;
+}
+.theme-btn[aria-pressed="true"] .theme-name {
+  font-weight: 600;
+  opacity: 1;
+}
+
+/* ── Modal (passkey setup) ──────────────────────────── */
+
+.modal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.15s ease-out;
+}
+.modal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.modal-card h2 { font-size: 18px; font-weight: 600; }
+.modal-card .muted { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.modal-card input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+}
+.modal-card input:focus { outline: none; border-color: var(--accent); }
+.modal-actions { display: flex; gap: 8px; margin-top: 4px; }
+.modal-actions button {
+  /* Reset any inherited margins (e.g. button.secondary's margin-top from
+     the login card) so both buttons sit at the same height in the flex row. */
+  flex: 1;
+  margin: 0;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  /* Match heights regardless of border presence — secondary has a 1px
+     border, primary doesn't, but with box-sizing:border-box outer size
+     stays equal. min-height keeps both visually identical. */
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-actions button:active { transform: scale(0.98); }
+.modal-actions .danger {
+  background: var(--error);
+  color: #fff;
+}
+.modal-actions .danger:active { background: var(--error); filter: brightness(0.92); }
+
+.modal-card .modal-message {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+  margin-bottom: 4px;
+}
+
+/* Subtle scale-in for the dynamically-built confirm modal */
+@keyframes confirmIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Confirm modals are spacious — these are decision moments, not forms.
+   Larger title, comfortable message text, bigger buttons. */
+.modal.confirm-modal .modal-card {
+  animation: confirmIn 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  max-width: 480px;
+  padding: 28px;
+  gap: 14px;
+}
+.modal.confirm-modal .modal-card h2 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+.modal.confirm-modal .modal-message {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.modal.confirm-modal .modal-actions {
+  gap: 10px;
+  margin-top: 8px;
+}
+.modal.confirm-modal .modal-actions button {
+  padding: 14px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 14px;
+  min-height: 52px;
+}
+
+/* ── App layout ──────────────────────────────────────── */
+
+#app {
+  position: fixed; inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding:
+    calc(env(safe-area-inset-top) + 12px)
+    calc(env(safe-area-inset-right) + 14px)
+    /* Extra bottom padding leaves a clean strip for the fixed footer
+       so the version pill never sits on top of a grid cell. */
+    calc(env(safe-area-inset-bottom) + 30px)
+    calc(env(safe-area-inset-left) + 14px);
+  gap: var(--gap);
+  overflow: hidden;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+
+header {
+  flex: 0 0 auto;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.brand h1 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  color: var(--accent);
+  flex: 0 0 auto;
+  display: block;
+}
+
+.ping, .battery {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+.ping {
+  min-width: 60px;
+  justify-content: center;
+}
+/* Three-tier ping classification: <60ms good, <200ms ok, >=200ms bad.
+   The middle "ok" tier matters for tunnels — most Cloudflare round-trips
+   land between 60–180ms and shouldn't paint red just because they're
+   not LAN-fast. */
+.ping[data-state="good"] { color: var(--success); border-color: rgba(90,238,141,0.4); }
+.ping[data-state="ok"]   { color: var(--warn);    border-color: rgba(240,196,58,0.4); }
+.ping[data-state="bad"]  { color: var(--error);   border-color: rgba(238,90,90,0.4); }
+.ping[data-state="idle"] { opacity: 0.5; }
+
+.battery-icon { width: 16px; height: 16px; flex: 0 0 auto; }
+.battery-icon .battery-fill { fill: currentColor; transition: y 0.3s, height 0.3s; }
+
+/* Battery states — border + colors per state */
+.battery[data-state="discharging"] {
+  color: var(--text);
+  border-color: var(--border);
+}
+.battery[data-state="charging"] {
+  color: var(--success);
+  border: 2px solid var(--success);
+  background: rgba(90,238,141,0.10);
+  animation: batteryCharge 1.6s ease-in-out infinite;
+}
+.battery[data-state="full"] {
+  color: var(--success);
+  border: 2px solid var(--success);
+  background: rgba(90,238,141,0.10);
+}
+.battery[data-state="low"] {
+  color: var(--warn);
+  border: 2px solid var(--warn);
+  background: rgba(240,196,58,0.10);
+}
+.battery[data-state="empty"] {
+  color: var(--error);
+  border: 2px solid var(--error);
+  background: rgba(238,90,90,0.18);
+  animation: batteryEmpty 0.9s ease-in-out infinite;
+}
+.battery[data-state="pending"] {
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+@keyframes batteryCharge {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(90,238,141,0); }
+  50%      { box-shadow: 0 0 0 3px rgba(90,238,141,0.2); }
+}
+@keyframes batteryEmpty {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+.battery-bolt { display: none; line-height: 1; }
+.battery[data-state="charging"] .battery-bolt,
+.battery[data-state="full"]     .battery-bolt {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  margin-left: 1px;
+  color: var(--success);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+/* ── Stats row (CPU/RAM/GPU/PROC/NET) ────────────────── */
+
+.stats {
+  flex: 0 0 auto;
+  height: var(--stats-h);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.6fr);
+  gap: 8px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+.stat-label {
+  grid-row: 1; grid-column: 1;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat-value {
+  grid-row: 1; grid-column: 2;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stat-bar {
+  grid-row: 2; grid-column: 1 / -1;
+  height: 4px;
+  background: var(--inner-glow);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.3s ease, background 0.2s;
+}
+.stat[data-level="high"] .stat-bar-fill { background: var(--warn); }
+.stat[data-level="high"] .stat-value    { color: var(--warn); }
+.stat[data-level="crit"] .stat-bar-fill { background: var(--error); }
+.stat[data-level="crit"] .stat-value    { color: var(--error); }
+
+.stat.stat-wide {
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+}
+.stat.stat-wide .stat-value {
+  font-size: 11px;
+  letter-spacing: 0.2px;
+}
+.stat.stat-wide .stat-bar { display: none; }
+
+/* Plain variant: label + value, no progress bar (e.g. PROC count) */
+.stat.stat-plain {
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+}
+.stat.stat-plain .stat-bar { display: none; }
+.stat.stat-plain .stat-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* GPU with no readable data: dimmed, bar stays empty */
+.stat[data-empty="true"] .stat-value { color: var(--muted); font-weight: 500; }
+.stat[data-empty="true"] .stat-bar-fill { background: var(--muted); opacity: 0.3; }
+
+/* Narrow portrait viewport: 2 columns, NET on its own row */
+@media (max-width: 720px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 38px;
+    height: auto;
+  }
+  .stat.stat-wide { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .stat-value { font-size: 11px; }
+}
+
+/* ── Icon button (header + inside dropdown) ──────────── */
+
+.ctrl-icon {
+  width: var(--row-h);
+  height: var(--row-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  transition: transform 0.1s, background 0.15s, color 0.15s, border-color 0.15s;
+}
+.ctrl-icon svg { width: 22px; height: 22px; fill: currentColor; }
+.ctrl-icon:active { background: var(--surface-2); transform: scale(0.93); }
+.ctrl-icon[aria-expanded="true"] {
+  background: var(--surface-2);
+  border-color: var(--accent);
+}
+/* Desktop hover — only fires on devices with a real pointer to avoid
+   sticky :hover on touch where it lingers after release. */
+@media (hover: hover) {
+  .ctrl-icon:hover { background: var(--surface-2); border-color: var(--muted); }
+  .ctrl-icon[aria-expanded="true"]:hover { border-color: var(--accent); }
+}
+
+.ctrl-icon-inner {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+}
+.ctrl-icon-inner:active { background: var(--surface-2); }
+.ctrl-icon-static { pointer-events: none; }
+
+/* Volume icon */
+#volume-btn .i-mute,
+#volume-mute .i-mute { display: none; }
+#volume-btn[data-muted="true"] .i-vol,
+#volume-mute[data-muted="true"] .i-vol { display: none; }
+#volume-btn[data-muted="true"] .i-mute,
+#volume-mute[data-muted="true"] .i-mute { display: block; color: var(--error); }
+
+#lock-btn:active { background: var(--accent); transform: scale(0.93); }
+
+/* ── System buttons ──────────────────────────────────── */
+
+#notif-btn .i-bell-mute { display: none; }
+#notif-btn[data-inhibited="true"] .i-bell      { display: none; }
+#notif-btn[data-inhibited="true"] .i-bell-mute { display: block; color: var(--warn); }
+#notif-btn[data-inhibited="true"] { border-color: var(--warn); }
+
+#power-btn .i-power-balanced,
+#power-btn .i-power-performance,
+#power-btn .i-power-saver { display: none; }
+#power-btn[data-profile="power-saver"]  .i-power-saver       { display: block; color: var(--success); }
+#power-btn[data-profile="balanced"]     .i-power-balanced    { display: block; color: var(--text); }
+#power-btn[data-profile="performance"]  .i-power-performance { display: block; color: var(--warn); }
+
+.ctrl-danger:active {
+  background: var(--error);
+  border-color: var(--error);
+  color: white;
+  transform: scale(0.93);
+}
+
+#shutdown-btn       svg { color: var(--error); fill: currentColor; }
+#server-kill-btn    svg { color: var(--muted); fill: currentColor; }
+#shutdown-btn:hover, #shutdown-btn:active { color: white; }
+
+.header-sep {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+  margin: 0 4px;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 920px) {
+  .header-sep { display: none; }
+  .header-controls { gap: 6px; }
+}
+
+/* ── Dropdowns ───────────────────────────────────────── */
+
+.dropdown {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px + var(--header-h) + 8px);
+  right: calc(env(safe-area-inset-right) + 14px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.55);
+  z-index: 50;
+  min-width: 300px;
+  max-width: calc(100vw - 28px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: dropdownIn 0.14s ease-out;
+}
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#brightness-bars { display: flex; flex-direction: column; gap: 8px; }
+
+/* ── Audio streams ───────────────────────────────────── */
+
+.audio-streams {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  max-height: 240px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.audio-streams:empty { display: none; }
+.audio-streams::-webkit-scrollbar { width: 4px; }
+.audio-streams::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.audio-stream {
+  display: flex;
+  align-items: center;
+  /* gap >= half of the slider thumb (26px content + 2×2px border = 30px,
+     half = 15px) so the thumb at 100% does not overlap the percentage
+     label. 18 gives 3px visual breathing room. */
+  gap: 18px;
+  background: var(--surface-2);
+  border-radius: 10px;
+  padding: 6px 10px 6px 4px;
+  height: 38px;
+}
+.audio-stream-mute {
+  /* 26×26 fits cleanly inside the row's 26px content area (38px -
+     12px vertical padding) — earlier 32×32 overflowed top + bottom
+     and made the icon read as un-centered against the label text. */
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  color: var(--text);
+}
+.audio-stream-mute svg { width: 18px; height: 18px; fill: currentColor; }
+.audio-stream[data-muted="true"] .audio-stream-mute { color: var(--error); }
+.audio-stream[data-muted="true"] .slider { opacity: 0.4; }
+.audio-stream-name {
+  font-size: 11px;
+  color: var(--muted);
+  flex: 0 0 auto;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.audio-stream .slider { height: 6px; }
+.audio-stream .ctrl-value { font-size: 11px; min-width: 32px; }
+/* Slider thumb is 26px — at 0% / 100% its centre sits on the track end,
+   so half (13px) bleeds past. Without enough gap the thumb overlaps the
+   percentage label, especially at 100%. Bump the row gap so the thumb
+   has clearance. Same fix on the master ctrl-row below. */
+.audio-stream { gap: 14px; }
+
+/* ── Notification dropdown ───────────────────────────── */
+
+.notif-dropdown {
+  min-width: 340px;
+  max-width: min(420px, calc(100vw - 28px));
+  padding: 8px;
+}
+.notif-header {
+  padding: 4px 4px 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.notif-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.notif-toggle:active { background: rgba(255,255,255,0.08); }
+
+.notif-toggle-switch {
+  display: inline-block;
+  width: 46px;
+  height: 28px;
+  background: var(--thumb-track);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.22s ease;
+  flex: 0 0 46px;
+  min-width: 46px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+}
+.notif-toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--thumb-bg);
+  border-radius: 50%;
+  transition: transform 0.22s cubic-bezier(0.3, 0.8, 0.3, 1.1);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+.notif-toggle[data-inhibited="true"] .notif-toggle-switch {
+  background: var(--warn);
+  border-color: var(--warn);
+}
+.notif-toggle[data-inhibited="true"] .notif-toggle-knob   { transform: translateX(18px); }
+.notif-toggle-label { flex: 1 1 auto; text-align: left; }
+.notif-toggle-hint {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  color: var(--warn);
+  padding: 4px 0 2px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.notif-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.notif-empty {
+  padding: 24px 12px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+.notif-item {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.notif-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.notif-item-app {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.notif-item-time { font-size: 11px; color: var(--muted); flex: 0 0 auto; }
+.notif-item-summary { font-size: 13px; font-weight: 500; color: var(--text); }
+.notif-item-body {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.notif-clear {
+  margin-top: 4px;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  border-radius: 8px;
+}
+.notif-clear:active { background: var(--surface-2); }
+
+/* ── Control row ─────────────────────────────────────── */
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  /* See .audio-stream — gap must clear the slider thumb's 15px half-width
+     (26px content + 2×2px border) so the percentage label does not get
+     covered at 100%. */
+  gap: 18px;
+  height: var(--row-h);
+  padding: 0 12px 0 4px;
+  background: var(--surface-2);
+  border-radius: 12px;
+}
+.ctrl-row[data-muted="true"] .slider { opacity: 0.4; }
+
+/* ── Slider ──────────────────────────────────────────── */
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1 1 auto;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  margin: 0;
+  cursor: pointer;
+  --pct: 100%;
+  background: linear-gradient(to right, var(--accent) 0 var(--pct), var(--thumb-track) var(--pct) 100%);
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--thumb-bg);
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.slider::-moz-range-thumb {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: var(--thumb-bg);
+  border: 2px solid var(--accent);
+  cursor: pointer;
+}
+
+.ctrl-value {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
+  min-width: 38px;
+  text-align: right;
+}
+
+.display-name {
+  font-size: 12px;
+  color: var(--muted);
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 110px;
+}
+
+/* ── Grid ────────────────────────────────────────────── */
+
+main { flex: 1 1 auto; min-height: 0; display: flex; }
+
+.grid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: var(--gap);
+  min-height: 0;
+}
+
+.cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  min-height: 0;
+  min-width: 0;
+  transition: transform 0.12s, background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.cell:active { background: var(--surface-2); transform: scale(0.97); }
+@media (hover: hover) {
+  .cell:hover { background: var(--surface-2); }
+  /* Preserve the active-app green border on hover; only neutral-bordered
+     cells lift to the muted color. */
+  .cell-app[data-app-state="off"]:hover,
+  .cell-app:not([data-app-state]):hover { border-color: var(--muted); }
+}
+
+.cell-icon {
+  width:  60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 14px;
+  pointer-events: none;
+  flex: 0 0 auto;
+  background: var(--inner-glow);
+  padding: 4px;
+}
+
+@media (min-width: 900px) {
+  .cell-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+    padding: 6px;
+  }
+}
+
+.cell-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.cell-app                                { border-color: var(--border); }
+.cell-app[data-app-state="active"]       { border-color: var(--success); }
+.cell-app[data-app-state="background"]   { border-color: var(--muted); }
+.cell-app[data-app-state="paused"]       { border-color: var(--warn); }
+
+.cell-cachy[data-state="available"] {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, var(--surface), rgba(90,141,238,0.12));
+}
+.cell-cachy[data-state="available"] .cell-label { color: var(--accent); }
+
+/* ── App footer: tiny repo link + version, bottom-right corner ────── */
+
+.app-footer {
+  position: fixed;
+  right:  calc(env(safe-area-inset-right)  + 12px);
+  bottom: calc(env(safe-area-inset-bottom) + 6px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.65;
+  transition: opacity 0.15s;
+  z-index: 5;
+}
+.app-footer:hover { opacity: 1; }
+
+.app-repo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s, background 0.15s;
+}
+.app-repo svg { width: 14px; height: 14px; fill: currentColor; }
+@media (hover: hover) {
+  .app-repo:hover { color: var(--accent); background: var(--surface); }
+}
+
+.app-version {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  user-select: none;
+}
+
+/* Version line at the bottom of the settings dropdown */
+.settings-meta {
+  margin-top: 8px;
+  padding: 8px 8px 4px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+.settings-meta #settings-version {
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ── Action menu (long-press) ───────────────────────── */
+
+.action-menu-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 200;
+  animation: fadeIn 0.15s ease-out;
+}
+@keyframes fadeIn { from {opacity:0} to {opacity:1} }
+
+.action-menu {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 10px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  z-index: 201;
+  min-width: 280px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: menuIn 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes menuIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.action-menu-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 10px 14px 8px;
+  text-align: center;
+  letter-spacing: 0.4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.action-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 15px;
+  color: var(--text);
+  text-align: left;
+  transition: background 0.1s, transform 0.1s;
+}
+.action-menu-item:active {
+  background: var(--surface-2);
+  transform: scale(0.98);
+}
+.action-menu-item .action-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  fill: var(--muted);
+  display: block;
+}
+.action-menu-danger { color: var(--error); }
+.action-menu-danger .action-icon { fill: var(--error); }
+
+/* ── Toast (iOS-style banner, top-center) ────────────── */
+
+.toast {
+  position: fixed;
+  /* Below header + stats row — does not overlap anything */
+  top: calc(env(safe-area-inset-top) + 12px + var(--header-h) + var(--stats-h) + 24px);
+  left: 50%;
+  background: var(--toast-bg);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border: 1px solid var(--toast-border);
+  padding: 12px 18px 12px 14px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  min-width: 220px;
+  max-width: min(360px, calc(100vw - 32px));
+  box-shadow:
+    0 1px 0 var(--inner-glow) inset,
+    0 16px 50px var(--shadow);
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -16px);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.96, 0.30, 1.10),
+    opacity   0.20s ease-out;
+}
+.toast.visible { opacity: 1; transform: translate(-50%, 0); }
+.toast .toast-icon { width: 22px; height: 22px; flex: 0 0 auto; fill: currentColor; }
+.toast .toast-text { flex: 1 1 auto; white-space: normal; line-height: 1.3; }
+.toast.success { color: var(--text); }
+.toast.success .toast-icon { color: var(--success); }
+.toast.error   { color: var(--text); }
+.toast.error   .toast-icon { color: var(--error); }
+.toast.info    { color: var(--text); }
+.toast.info    .toast-icon { color: var(--accent); }
+
+/* ── Error pages (401 / 403 / 404 / 500 / 502 …) ───────── */
+
+body.error-page {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.error-screen {
+  position: fixed; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding:
+    calc(env(safe-area-inset-top) + 24px)
+    calc(env(safe-area-inset-right) + 24px)
+    calc(env(safe-area-inset-bottom) + 24px)
+    calc(env(safe-area-inset-left) + 24px);
+}
+
+.error-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 36px 28px 30px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 16px 50px var(--shadow);
+}
+
+.error-status {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.error-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.error-message {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.error-actions {
+  display: flex;
+  justify-content: center;
+}
+.error-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.1s, filter 0.15s;
+}
+.error-btn:active   { transform: scale(0.97); }
+.error-btn:hover    { filter: brightness(1.08); }
+
+/* Specific status accents */
+.error-page[data-status="500"] .error-status,
+.error-page[data-status="502"] .error-status,
+.error-page[data-status="503"] .error-status { color: var(--error); }
+.error-page[data-status="401"] .error-status,
+.error-page[data-status="403"] .error-status { color: var(--warn); }
+
+
+/* ── Narrow screen (phone portrait) ──────────────────── */
+
+@media (max-width: 640px) {
+  :root { --header-h: 52px; --row-h: 42px; --gap: 10px; --stats-h: 38px; }
+  .brand h1 { font-size: 16px; }
+  .display-name { max-width: 80px; }
+  .dropdown { min-width: 280px; }
+}
+
+/* ── Desktop (1080p / 1440p / 4K) ─────────────────────────────────────
+   Cap the panel width on big screens so the grid doesn't sprawl into
+   awkward letterbox cells, and bump the cell-icon size for legibility
+   at typical desktop viewing distance. */
+
+@media (min-width: 1280px) {
+  #app {
+    max-width: 1440px;
+    margin: 0 auto;
+  }
+  :root { --header-h: 60px; --stats-h: 48px; }
+  .cell-icon { width: 72px; height: 72px; padding: 6px; }
+  .cell-label { font-size: 13px; }
+}
+
+@media (min-width: 1920px) {
+  #app { max-width: 1680px; }
+  :root { --header-h: 64px; --stats-h: 52px; --gap: 14px; }
+  .brand h1 { font-size: 20px; }
+  .cell-icon { width: 80px; height: 80px; }
+  .cell-label { font-size: 14px; }
+}
+
+@media (min-width: 2560px) {
+  /* 4K: keep dialog density readable, don't blow up to giant icons */
+  #app { max-width: 1920px; }
+  .cell-icon { width: 88px; height: 88px; }
+}
+
+/* Reduce motion: respect the OS-level preference (a11y) */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

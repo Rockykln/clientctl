@@ -1,0 +1,16 @@
+# Cloudflare tunnel configuration
+#
+# 1. tunnel = ID from your `cloudflared tunnel create <name>` setup
+# 2. credentials-file = JSON file Cloudflare returns after `tunnel create`
+# 3. hostname = public domain (set up the DNS record in Cloudflare)
+#
+# Copied to cloudflared.yml on first launch (gitignored).
+# Edit cloudflared.yml with your tunnel ID, then run start.sh.
+
+tunnel: <YOUR-TUNNEL-ID>
+credentials-file: /home/<USER>/.cloudflared/<YOUR-TUNNEL-ID>.json
+
+ingress:
+  - hostname: <YOUR-DOMAIN>
+    service: http://localhost:8090
+  - service: http_status:404

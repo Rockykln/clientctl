@@ -1,0 +1,100 @@
+# clientctl — App configuration
+#
+# Copied to apps.yml on first launch (gitignored). Edit apps.yml to fit
+# your machine — this example file stays untouched.
+#
+# Fields per app (only `name` + (`cmd` | `desktop_file`) are required):
+#   name             — Cell display name
+#   cmd              — Fallback command if desktop_file is missing
+#   desktop_file     — Preferred for gio launch (clean DBus activation)
+#   binary           — Process name for /proc match (15-char limit)
+#   pwa_id           — Chromium PWA app-id (alternative to binary; no pause/kill)
+#   desktop_id       — KWin desktopFileName (.desktop without extension)
+#   wm_class         — KWin resourceClass — string or list (case-insensitive)
+#   caption_includes — Caption substring as additional window match
+#   cmdline_match    — Substring required in cmdline (Electron apps)
+#   icon             — Path to icon. ~ and $VARS are expanded.
+
+apps:
+
+  files:
+    name:         "Files"
+    cmd:          ["dolphin"]
+    desktop_file: "/usr/share/applications/org.kde.dolphin.desktop"
+    binary:       "dolphin"
+    desktop_id:   "org.kde.dolphin"
+    wm_class:     "dolphin"
+    icon:         "/usr/share/icons/hicolor/scalable/apps/org.kde.dolphin.svg"
+
+  terminal:
+    name:         "Terminal"
+    cmd:          ["konsole"]
+    desktop_file: "/usr/share/applications/org.kde.konsole.desktop"
+    binary:       "konsole"
+    desktop_id:   "org.kde.konsole"
+    wm_class:     "org.kde.konsole"
+    icon:         "/usr/share/icons/breeze/apps/48/utilities-terminal.svg"
+
+  editor:
+    name:         "Text Editor"
+    cmd:          ["kate"]
+    desktop_file: "/usr/share/applications/org.kde.kate.desktop"
+    binary:       "kate"
+    desktop_id:   "org.kde.kate"
+    wm_class:     "org.kde.kate"
+    icon:         "/usr/share/icons/breeze/apps/48/kate.svg"
+
+  sysmon:
+    name:         "System Monitor"
+    cmd:          ["plasma-systemmonitor"]
+    desktop_file: "/usr/share/applications/org.kde.plasma-systemmonitor.desktop"
+    binary:       "plasma-systemmo"   # comm is truncated to 15 chars
+    desktop_id:   "org.kde.plasma-systemmonitor"
+    wm_class:     "org.kde.plasma-systemmonitor"
+    icon:         "/usr/share/icons/breeze-dark/apps/48/utilities-system-monitor.svg"
+
+  browser:
+    name:         "Firefox"
+    cmd:          ["firefox"]
+    desktop_file: "/usr/share/applications/firefox.desktop"
+    binary:       "firefox"
+    desktop_id:   "firefox"
+    wm_class:     "firefox"
+    icon:         "/usr/share/icons/hicolor/128x128/apps/firefox.png"
+
+  # Example for a Chromium PWA (no pause/kill possible since Chromium
+  # shares one parent process for all PWAs — detection runs via KWin):
+  #
+  # my_pwa:
+  #   name:         "My Web App"
+  #   cmd:          ["/usr/bin/chromium", "--profile-directory=Default",
+  #                  "--app-id=YOUR-APP-ID-HERE"]
+  #   desktop_file: "~/.local/share/applications/chrome-YOUR-APP-ID-HERE-Default.desktop"
+  #   pwa_id:       "YOUR-APP-ID-HERE"
+  #   desktop_id:   "chrome-YOUR-APP-ID-HERE-Default"
+  #   wm_class:     "crx_YOUR-APP-ID-HERE"
+  #   icon:         "~/.local/share/icons/hicolor/256x256/apps/chrome-YOUR-APP-ID-HERE-Default.png"
+  #
+  # Example for an Electron app where `comm` reports `electron` instead
+  # of the app name. `cmdline_match` finds it by a stable launch flag.
+  #
+  # my_electron_app:
+  #   name:          "My App"
+  #   cmd:           ["~/.local/bin/my-app"]
+  #   desktop_file:  "~/.local/share/applications/my-app.desktop"
+  #   binary:        "my-app"
+  #   cmdline_match: "--class=MyApp"
+  #   desktop_id:    "my-app"
+  #   wm_class:      ["MyApp", "my-app"]
+  #   icon:          "~/.local/share/icons/hicolor/256x256/apps/my-app.png"
+
+
+# Cell order in the 4×3 grid. Up to 12 entries.
+# `cachy` is a special cell pointing to the arch-update tray
+# (only useful on Arch / CachyOS — drop it elsewhere).
+grid:
+  - files
+  - terminal
+  - editor
+  - browser
+  - sysmon

@@ -1,0 +1,37 @@
+name: clientctl CodeQL config
+
+# We run the security-and-quality query suite. The "security" half is
+# what we care about; the "quality" half ships notes for stylistic
+# patterns that are intentional in this codebase. Suppress those so the
+# alerts page surfaces real findings, not background noise.
+
+queries:
+  - uses: security-and-quality
+
+query-filters:
+  # Empty `except` blocks are deliberate in best-effort cleanup paths
+  # (tempfile unlink, daemon-thread cleanup, signal-only handlers, …).
+  # Each site has a comment explaining why; the CodeQL note here would
+  # be repeated 20× without adding signal.
+  - exclude:
+      id: py/empty-except
+
+  # Repeated imports inside test functions are an intentional pattern
+  # for monkeypatching a module that's also imported at file-top — the
+  # local rebind makes the patch site obvious.
+  - exclude:
+      id: py/repeated-import
+
+  # `py/unused-global-variable` does not see cross-module accesses like
+  # `config.LOGIN_CODE` from server.py / routes/* — flags every public
+  # module-level constant as "unused" although the rest of the
+  # codebase reads them. Single-file analysis is the wrong shape for
+  # this codebase's module boundaries.
+  - exclude:
+      id: py/unused-global-variable
+
+paths-ignore:
+  - tests/**     # the suite already self-checks via assertions
+  - docs/**
+  - examples/**
+  - scripts/**
