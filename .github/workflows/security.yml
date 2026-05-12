@@ -78,7 +78,7 @@ jobs:
         # the repo's git history while running, which is exactly the kind
         # of third-party action GitHub recommends pinning by commit SHA.
         # Bumped via Dependabot's github-actions ecosystem.
-        uses: trufflesecurity/trufflehog@17456f8c7d042d8c82c9a8ca9e937231f9f42e26  # v3.95.2
+        uses: trufflesecurity/trufflehog@37b77001d0174ebec2fcca2bd83ff83a6d45a3ab  # v3.95.3
         with:
           # --only-verified: a "secret" is only flagged when TruffleHog
           # successfully validates it against the actual service (e.g. a
