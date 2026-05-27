@@ -93,5 +93,5 @@
     <text x="170" y="246" font-size="11" fill="#8a8a96" text-anchor="middle" opacity="0.6">3 active streams</text>
   </g>
 
-  <text x="710" y="528" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.0</text>
+  <text x="710" y="528" font-size="10" font-family="ui-monospace, monospace" fill="#8a8a96" opacity="0.45" text-anchor="end">v0.1.1</text>
 </svg>

@@ -1,6 +1,6 @@
 [project]
 name            = "clientctl"
-version         = "0.1.0"     # Single source of truth: config.VERSION (CI verifies match)
+version         = "0.1.1"     # Single source of truth: config.VERSION (CI verifies match)
 description     = "Web-based control panel for a Linux client (KDE Plasma 6 / multi-distro)"
 readme          = "README.md"
 license         = { file = "LICENSE" }

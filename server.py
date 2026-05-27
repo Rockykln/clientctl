@@ -212,7 +212,7 @@ def banner(app_caps: dict) -> None:
     if config.MODE == "dev":
         print(f"  Open   http://127.0.0.1:{config.PORT}   (localhost only)")
     elif config.MODE == "tunnel":
-        print(f"  Open   via your Cloudflare tunnel hostname (HTTPS)")
+        print("  Open   via your Cloudflare tunnel hostname (HTTPS)")
         print(f"         server itself bound to 127.0.0.1:{config.PORT}")
     else:
         for ip in _local_ips():

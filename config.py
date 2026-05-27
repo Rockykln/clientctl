@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 # Bumped per release. VERSION is mirrored in pyproject.toml — CI verifies
 # they match. REPO_URL appears in the bottom-right corner of the UI as a
 # tiny link; leave empty to hide it. Update both at release time.
-VERSION  = "0.1.0"
+VERSION  = "0.1.1"
 REPO_URL = "https://github.com/Rockykln/clientctl"
 
 ROOT   = Path(__file__).resolve().parent

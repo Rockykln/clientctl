@@ -1,6 +1,6 @@
 # clientctl
 
-![version](https://img.shields.io/badge/version-0.1.0-blue)
+![version](https://img.shields.io/badge/version-0.1.1-blue)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
@@ -15,36 +15,31 @@ also runs on other distributions — features the running system does not
 support are simply hidden in the UI.
 
 <p align="center">
-  <img src="docs/screenshots/overview.svg" alt="clientctl panel overview" width="820"/>
+  <img src="docs/screenshots/overview.png" alt="clientctl panel overview" width="820"/>
 </p>
 
 <p align="center">
   <em>Illustrative mockup — 4×3 app grid, live CPU/RAM/GPU/PROC/NET stats, header with ping + battery.</em>
 </p>
 
-<details>
-<summary>More views</summary>
-
 <table>
   <tr>
-    <td><img src="docs/screenshots/lock.svg"        alt="Lock screen"     width="380"/></td>
-    <td><img src="docs/screenshots/audio.svg"       alt="Audio dropdown"  width="380"/></td>
+    <td><img src="docs/screenshots/lock.png"        alt="Lock screen"     width="380"/></td>
+    <td><img src="docs/screenshots/audio.png"       alt="Audio dropdown"  width="380"/></td>
   </tr>
   <tr>
     <td align="center"><sub>Lock-screen overlay (biometric unlock via passkey)</sub></td>
     <td align="center"><sub>Audio dropdown — master + per-app sliders, mute states</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/screenshots/action-menu.svg" alt="Long-press app menu" width="380"/></td>
-    <td><img src="docs/screenshots/passkeys.svg"    alt="Settings + passkey list" width="380"/></td>
+    <td><img src="docs/screenshots/action-menu.png" alt="Long-press app menu" width="380"/></td>
+    <td><img src="docs/screenshots/passkeys.png"    alt="Settings + passkey list" width="380"/></td>
   </tr>
   <tr>
     <td align="center"><sub>Long-press menu — close / minimize / pause / kill</sub></td>
     <td align="center"><sub>Settings — passkey list with device identification + theme picker</sub></td>
   </tr>
 </table>
-
-</details>
 
 
 ## Features
@@ -233,7 +228,7 @@ clientctl/
 ├── .env                     # gitignored — secrets
 ├── .env.example             #            — template in repo
 ├── tests/                   # pytest suite (hermetic, no KDE required)
-├── docs/screenshots/        # SVG mockups used in README
+├── docs/screenshots/        # SVG mockups + rendered PNGs used in README
 ├── examples/                # .desktop launcher + systemd user services
 ├── .github/                 # CI workflows, dependabot, issue + PR templates
 ├── start.sh                 # Launcher: server + cloudflared, auto-init

@@ -10,6 +10,7 @@ Hardening:
 """
 
 import hmac
+import ipaddress
 import json
 import logging
 import os
@@ -17,7 +18,6 @@ import secrets
 import subprocess
 import threading
 import time
-from urllib.parse import quote
 
 from flask import Blueprint, jsonify, request, session
 from webauthn import (
@@ -44,23 +44,24 @@ log = logging.getLogger("clientctl.auth")
 def _client_ip() -> str:
     """Best-effort remote IP for rate-limit keys. Honours X-Forwarded-For
     only when it's a single hop, since the server should sit behind at most
-    one proxy (Cloudflare tunnel) — multi-hop spoofing is rejected."""
+    one proxy (Cloudflare tunnel) — multi-hop spoofing is rejected.
+
+    The return value is GUARANTEED to be either a normalised IP literal
+    (produced by ``ipaddress.ip_address``) or one of the constant strings
+    ``"unknown"`` / ``"invalid"``. Downstream consumers — rate-limit keys,
+    passkey metadata, log entries — can therefore never receive attacker-
+    controlled CR/LF or other log-/shell-breaking characters."""
     fwd = request.headers.get("X-Forwarded-For", "")
     if fwd and "," not in fwd:
-        return fwd.strip()
-    return request.remote_addr or "unknown"
-
-
-def _safe_log(s) -> str:
-    """URL-quote user-controllable data before sending it to log.*
-
-    Prevents log injection via crafted X-Forwarded-For headers (or any
-    request-derived string carrying CR/LF). `urllib.parse.quote` is on
-    CodeQL's recognised-sanitizer list — using it here documents the
-    intent at the type level instead of relying on a regex CodeQL can't
-    follow through a helper.
-    """
-    return quote(str(s), safe=":.@/-")[:200]
+        raw = fwd.strip()
+    else:
+        raw = request.remote_addr or ""
+    if not raw:
+        return "unknown"
+    try:
+        return str(ipaddress.ip_address(raw))
+    except ValueError:
+        return "invalid"
 
 
 def _lookup_mac(ip: str) -> str:
@@ -223,7 +224,14 @@ def login():
     ip = _client_ip()
     allowed, retry_in = LOGIN_LIMITER.check(ip)
     if not allowed:
-        log.warning("login: rate-limited %s (retry in %ds)", _safe_log(ip), int(retry_in))
+        # ip is already CRLF-free by construction (_client_ip validates via
+        # ipaddress.ip_address). The inline .replace() chain is the canonical
+        # sanitizer pattern CodeQL's py/log-injection query recognises.
+        log.warning(
+            "login: rate-limited %s (retry in %ds)",
+            ip.replace("\n", "").replace("\r", ""),
+            int(retry_in),
+        )
         return jsonify({
             "ok":    False,
             "error": f"Too many attempts. Try again in {int(retry_in)} seconds.",
@@ -334,7 +342,11 @@ def passkey_register_begin():
     ip = _client_ip()
     allowed, retry_in = PASSKEY_REG_LIMITER.check(ip)
     if not allowed:
-        log.warning("passkey-register: rate-limited %s (retry in %ds)", _safe_log(ip), int(retry_in))
+        log.warning(
+            "passkey-register: rate-limited %s (retry in %ds)",
+            ip.replace("\n", "").replace("\r", ""),
+            int(retry_in),
+        )
         return jsonify({
             "ok":    False,
             "error": f"Too many attempts. Try again in {int(retry_in)} seconds.",
@@ -453,7 +465,11 @@ def passkey_auth_finish():
     ip = _client_ip()
     allowed, retry_in = PASSKEY_AUTH_LIMITER.check(ip)
     if not allowed:
-        log.warning("passkey-auth: rate-limited %s (retry in %ds)", _safe_log(ip), int(retry_in))
+        log.warning(
+            "passkey-auth: rate-limited %s (retry in %ds)",
+            ip.replace("\n", "").replace("\r", ""),
+            int(retry_in),
+        )
         return jsonify({
             "ok":    False,
             "error": f"Too many attempts. Try again in {int(retry_in)} seconds.",
@@ -474,7 +490,10 @@ def passkey_auth_finish():
         None,
     )
     if not matching:
-        log.info("passkey-auth: unknown credential id from %s", _safe_log(ip))
+        log.info(
+            "passkey-auth: unknown credential id from %s",
+            ip.replace("\n", "").replace("\r", ""),
+        )
         return jsonify({"ok": False, "error": "Authentication failed"}), 401
 
     try:
@@ -487,7 +506,15 @@ def passkey_auth_finish():
             credential_current_sign_count=matching["sign_count"],
         )
     except Exception as e:
-        log.info("passkey-auth: verification failed from %s: %s", _safe_log(ip), _safe_log(e))
+        # Log only the exception class name — the message can carry attacker-
+        # influenced content (e.g. malformed credential payloads). ip is
+        # already CRLF-free by construction; .replace() is the CodeQL-
+        # recognised sanitizer pattern.
+        log.info(
+            "passkey-auth: verification failed from %s: %s",
+            ip.replace("\n", "").replace("\r", ""),
+            type(e).__name__,
+        )
         return jsonify({"ok": False, "error": "Authentication failed"}), 401
 
     matching["sign_count"] = verification.new_sign_count

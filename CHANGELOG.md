@@ -5,6 +5,35 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] — 2026-05-27
+
+Security & hardening patch — closes all six Code Scanning alerts opened
+against v0.1.0. No behaviour change for end users.
+
+### Security
+
+- **Log injection (`py/log-injection`, 5×)** — `routes/auth.py`. The
+  remote IP that lands in rate-limit warning/info log lines is now
+  validated via `ipaddress.ip_address` inside `_client_ip()`, so any
+  X-Forwarded-For payload that isn't a real address collapses to the
+  literal `"invalid"` / `"unknown"` sentinel before it reaches anything
+  downstream (logs, rate-limit keys, passkey metadata). Each log call
+  also strips CR/LF inline as the canonical CodeQL-recognised sanitizer
+  pattern. The passkey-auth verification-failure log now records only
+  the exception class name, not the message text.
+- **Command-line injection (`py/command-line-injection`, 1×)** —
+  `utils/shell.py`. The subprocess wrapper now enforces (a) a frozenset
+  allowlist of executables it is permitted to invoke (`busctl`,
+  `ddcutil`, `ip`, `loginctl`, `qdbus6`, `wpctl`) and (b) a tight
+  ASCII-only regex on every argv element. Both checks raise before
+  anything reaches `subprocess`. Callers already validated their input;
+  this is defence-in-depth at the wrapper boundary.
+
+### Fixed
+
+- Stray `f`-prefix on a placeholder-less log line in `server.py`
+  (ruff F541).
+
 ## [0.1.0] — 2026-05-05
 
 Initial public release.
@@ -264,4 +293,5 @@ The server enforces these defaults — no opt-in required.
   generic error messages, file permissions, HSTS gating, capabilities
   auth-gate, XFF spoofing).
 
-[0.1.0]: https://github.com/_/clientctl/releases/tag/v0.1.0
+[0.1.1]: https://github.com/Rockykln/clientctl/releases/tag/v0.1.1
+[0.1.0]: https://github.com/Rockykln/clientctl/releases/tag/v0.1.0
